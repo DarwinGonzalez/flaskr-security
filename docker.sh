@@ -5,7 +5,7 @@ DEV_CMD="flask run --host=0.0.0.0 --port=80"
 RUN_ENV="-e STATIC_PATH=/app/flaskr/static"
 PORTS="127.0.0.1:80:80"
 VMAP="$(pwd)/app:/app"
-IMAGE="tiangolo/uwsgi-nginx-flask:python3.6-alpine3.7"
+IMAGE="stodh/uwsgi-nginx-flaskr-security"
 
 case "$1" in
 dev)
