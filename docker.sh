@@ -13,7 +13,7 @@ IMAGE="stodh/uwsgi-nginx-flaskr-security"
 CALLER_SCRIPT="$(readlink -f "$0")" || true
 CALLER_SCRIPT_DIR="$(dirname "$CALLER_SCRIPT")" || true
 if [ -n "$CALLER_SCRIPT_DIR" ]; then
-	cd $CALLER_SCRIPT_DIR
+    cd $CALLER_SCRIPT_DIR
 fi
 
 # Process options
@@ -21,6 +21,10 @@ case "$1" in
 dev)
     docker run --rm -d $DEV_ENV --name "$NAME" -p "$PORTS" -v "$VMAP" \
            "$IMAGE" $DEV_CMD
+;;
+exec)
+    shift
+    docker exec -ti "$NAME" "$@"
 ;;
 init-db)
     docker run --rm -d $INIT_DB_ENV --name "$NAME" -p "$PORTS" -v "$VMAP" \
@@ -45,5 +49,5 @@ stop)
     docker stop "$NAME"
 ;;
 *)
-	echo "Uso: $0 [dev|logs|init-db|reload|run|shell|status|stop]"
+    echo "Uso: $0 [dev|exec|init-db|logs|reload|run|shell|status|stop]"
 esac
