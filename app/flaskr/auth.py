@@ -106,3 +106,29 @@ def logout():
     """Clear the current session, including the stored user id."""
     session.clear()
     return redirect(url_for('index'))
+
+@bp.route('/chpass', methods=('GET', 'POST'))
+def chpass():
+    if request.method == 'POST':
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+
+        password = request.form['password']
+        newpassword = request.form['newpassword']
+
+        results = zxcvbn(newpassword)
+        score = results['score']
+
+        if score < 3:
+            return redirect(url_for('index'))
+
+        db = get_db()
+
+        if check_password_hash(g.user['password'], password):
+            db.execute('UPDATE user SET password = ? WHERE id = ?', (generate_password_hash(newpassword), g.user['id']))
+            db.commit()
+            session.clear()
+            return redirect(url_for('auth.login'))
+
+
+    return render_template('auth/changepass.html')
